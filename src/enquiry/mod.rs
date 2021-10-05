@@ -9,7 +9,7 @@ mod tests;
 use question::Question;
 use answer::Answer;
 
-//@TODO IMPLEMENTAR VERSION CON TIMEOUT usando tokio_select!
+//@TODO IMPLEMENT VERSION WITH TIMEOUT using tokio_select!
 
 pub fn new<Q, A>(size: usize) -> (Question<Q, A>, Answer<Q, A>) {
     let (question_sender, question_receiver) = tokio::sync::mpsc::channel(size);

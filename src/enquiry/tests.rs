@@ -22,11 +22,11 @@ fn test1() {
 
 async fn interrogator(question: Question<u8, u16>, v: u8) -> bool {
     let question = question.ask(v).await.unwrap();
-    question.hear().await.unwrap() == (v as u16) * 2
+    question.hear_answer().await.unwrap() == (v as u16) * 2
 }
 
 async fn eager_interrogator(question: Question<u8, u16>, v: u8) -> bool {
-    question.ask_and_hear(v).await.unwrap() == (v as u16) * 2
+    question.ask_and_hear_answer(v).await.unwrap() == (v as u16) * 2
 }
 
 async fn suspect(mut answer: Answer<u8, u16>) -> bool {

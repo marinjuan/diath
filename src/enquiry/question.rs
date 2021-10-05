@@ -29,16 +29,16 @@ impl<Q, A> Question<Q,A> {
             }
         )
     }
-    pub async fn ask_and_hear(self, message: Q) -> Result<A, DialogueError<Q>> {
+    pub async fn ask_and_hear_answer(self, message: Q) -> Result<A, DialogueError<Q>> {
         self.ask(message).await
             .map_err(DialogueError::Ask)?
-            .hear().await
+            .hear_answer().await
             .map_err(|_| DialogueError::Hear(HearError(())))
     }
 }
 
 impl<A> QuestionAsked<A> {
-    pub async fn hear(self) -> Result<A, HearError> {
+    pub async fn hear_answer(self) -> Result<A, HearError> {
         self.answer_receiver.await
             .map_err(|_| HearError(()))
     }
