@@ -2,8 +2,12 @@
 name = "diath"
 version = "0.1.0"
 edition = "2018"
-license = "MIT
+license = "MIT"
 description = "diath is light-weight library for communication between tokio async tasks"
+repository = "https://github.com/marinjuan/diath"
+readme = false # Can be set to a relative path were the readme is located
+keywords = ["dialogue", "async", "tokio", "tools", "channel"]
+categories = ["asynchronous"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
