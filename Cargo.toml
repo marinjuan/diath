@@ -1,9 +1,9 @@
 [package]
 name = "diath"
-version = "0.2.0"
+version = "0.2.1"
 edition = "2018"
 license = "MIT"
-description = "diath is light-weight library for communication between tokio async tasks"
+description = "diath is a light-weight library for communication between tokio async tasks"
 repository = "https://github.com/marinjuan/diath"
 readme = false # Can be set to a relative path were the readme is located
 keywords = ["dialogue", "async", "tokio", "tools", "channel"]

@@ -1,4 +1,4 @@
-use std::ops::Deref;
+use std::ops::{Deref, DerefMut};
 use tokio::sync::oneshot;
 use crate::enquiry::error::AnswerError;
 
@@ -38,5 +38,11 @@ impl<Q, A> Deref for Dialogue<Q, A> {
 
     fn deref(&self) -> &Self::Target {
         &self.message
+    }
+}
+
+impl<Q, A> DerefMut for Dialogue<Q, A> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.message
     }
 }
