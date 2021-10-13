@@ -2,7 +2,7 @@ use crate::enquiry::dialogue::Dialogue;
 use tokio::sync::mpsc;
 
 /// Answer can hear questions, when a question is received a new `Dialogue` is created
-/// To create an Answerer you must use the `enquiry::new()` method
+/// Instances are created by the [`enquiry::new(size)`](crate::enquiry::new()) function
 pub struct Answerer<Q, A> {
     question_receiver: mpsc::Receiver<Dialogue<Q, A>>,
 }

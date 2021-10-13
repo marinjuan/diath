@@ -5,7 +5,7 @@ use tokio::sync::{mpsc, oneshot};
 
 /// Questioner can be used to ask exactly 1 question to the Answer side.
 /// Questioner is cheap to Clone, consider cloning it when you will have to ask multiple questions.
-/// To create a Questioner you must use the `enquiry::new()` method
+/// Instances are created by the [`enquiry::new(size)`](crate::enquiry::new()) function
 #[derive(Debug, Clone)]
 pub struct Questioner<Q, A> {
     question_sender: mpsc::Sender<Dialogue<Q,A>>,
