@@ -1,6 +1,6 @@
 [package]
 name = "diath"
-version = "0.2.1"
+version = "0.2.2"
 edition = "2018"
 license = "MIT"
 description = "diath is a light-weight library for communication between tokio async tasks"
@@ -12,4 +12,4 @@ categories = ["asynchronous"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-tokio = {version = "1", features = ["tokio-macros", "rt", "sync"]}
+tokio = {version = "1", features = ["tokio-macros", "rt", "sync", "macros", "time"]}

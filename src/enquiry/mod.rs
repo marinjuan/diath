@@ -6,14 +6,13 @@ mod error;
 #[cfg(test)]
 mod tests;
 
-use question::Question;
-use answer::Answer;
+use question::Questioner;
+use answer::Answerer;
 
-//@TODO IMPLEMENT VERSION WITH TIMEOUT using tokio_select!
-
-pub fn new<Q, A>(size: usize) -> (Question<Q, A>, Answer<Q, A>) {
+/// Creates a new tuple of (`Question<Q, A>`, `Answer<Q, A>`)
+pub fn new<Q, A>(size: usize) -> (Questioner<Q, A>, Answerer<Q, A>) {
     let (question_sender, question_receiver) = tokio::sync::mpsc::channel(size);
-    let question = Question::new(question_sender);
-    let answer = Answer::new(question_receiver);
+    let question = Questioner::new(question_sender);
+    let answer = Answerer::new(question_receiver);
     (question, answer)
 }
