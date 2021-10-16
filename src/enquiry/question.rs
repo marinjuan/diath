@@ -1,10 +1,10 @@
 use std::time::Duration;
 use crate::enquiry::dialogue::Dialogue;
-use crate::enquiry::error::{AskError, DialogueError, HearError, HearTimeoutError};
+use crate::enquiry::error::{AskError, DialogueError, DialogueTimeoutError, HearError, HearTimeoutError};
 use tokio::sync::{mpsc, oneshot};
 
-/// Questioner can be used to ask exactly 1 question to the Answer side.
-/// Questioner is cheap to Clone, consider cloning it when you will have to ask multiple questions.
+/// Questioner can be used to ask questions to the Answer side.
+/// Questioner is cheap to Clone, consider cloning it when you will have to ask questions from multiple tasks
 /// Instances are created by the [`enquiry::new(size)`](crate::enquiry::new()) function
 #[derive(Debug, Clone)]
 pub struct Questioner<Q, A> {
@@ -24,7 +24,7 @@ impl<Q, A> Questioner<Q,A> {
         }
     }
     /// Ask a question
-    pub async fn ask(self, message: Q) -> Result<QuestionAsked<A>, AskError<Q>> {
+    pub async fn ask(&self, message: Q) -> Result<QuestionAsked<A>, AskError<Q>> {
         let (answer_sender, answer_receiver) = tokio::sync::oneshot::channel();
         let dialogue = Dialogue::new(message, answer_sender);
         self.question_sender.send(dialogue).await
@@ -36,11 +36,18 @@ impl<Q, A> Questioner<Q,A> {
         )
     }
     /// Ask a question and also wait for an answer
-    pub async fn ask_and_hear_answer(self, message: Q) -> Result<A, DialogueError<Q>> {
+    pub async fn ask_and_hear_answer(&self, message: Q) -> Result<A, DialogueError<Q>> {
         self.ask(message).await
             .map_err(DialogueError::Ask)?
             .hear_answer().await
-            .map_err(|_| DialogueError::Hear(HearError(())))
+            .map_err(|_| DialogueError::Hear)
+    }
+    /// Ask a question and also wait for an answer
+    pub async fn ask_and_hear_answer_or_timeout(&self, message: Q, timeout: impl Into<Duration>) -> Result<A, DialogueTimeoutError<Q>> {
+        self.ask(message).await
+            .map_err(DialogueTimeoutError::Ask)?
+            .hear_answer_or_timeout(timeout).await
+            .map_err(|e| e.into())
     }
 }
 

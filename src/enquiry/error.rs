@@ -26,7 +26,33 @@ pub enum HearTimeoutError {
 #[derive(Debug)]
 pub enum DialogueError<Q> {
     Ask(AskError<Q>),
-    Hear(HearError),
+    Hear,
+}
+
+/// Either an AskError, a HearError or a Timeout
+#[derive(Debug)]
+pub enum DialogueTimeoutError<Q> {
+    Ask(AskError<Q>),
+    Hear,
+    Timeout,
+}
+
+impl<Q> From<DialogueError<Q>> for DialogueTimeoutError<Q> {
+    fn from(v: DialogueError<Q>) -> Self {
+        match v {
+            DialogueError::Hear => DialogueTimeoutError::Hear,
+            DialogueError::Ask(v) => DialogueTimeoutError::Ask(v),
+        }
+    }
+}
+
+impl<Q> From<HearTimeoutError> for DialogueTimeoutError<Q> {
+    fn from(v: HearTimeoutError) -> Self {
+        match v {
+            HearTimeoutError::Timeout => DialogueTimeoutError::Timeout,
+            HearTimeoutError::Disconnected => DialogueTimeoutError::Hear,
+        }
+    }
 }
 
 impl<Q> AskError<Q> {
@@ -35,6 +61,9 @@ impl<Q> AskError<Q> {
             question
         }
     }
+    pub fn into_inner(self) -> Q {
+        self.question
+    }
 }
 
 impl<A> AnswerError<A> {
@@ -42,5 +71,8 @@ impl<A> AnswerError<A> {
         Self {
             answer
         }
+    }
+    pub fn into_inner(self) -> A {
+        self.answer
     }
 }
