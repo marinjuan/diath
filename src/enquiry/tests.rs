@@ -1,4 +1,4 @@
-use crate::enquiry::answer::Answerer;
+use crate::enquiry::answer::Responder;
 use crate::enquiry::question::Questioner;
 
 #[test]
@@ -22,15 +22,15 @@ fn test1() {
 
 async fn number_interrogator(question: Questioner<u8, u16>, v: u8) -> bool {
     let question = question.ask(v).await.unwrap();
-    question.hear_answer().await.unwrap() == (v as u16) * 2
+    question.listen().await.unwrap() == (v as u16) * 2
 }
 
 async fn eager_interrogator(question: Questioner<u8, u16>, v: u8) -> bool {
-    question.ask_and_hear_answer(v).await.unwrap() == (v as u16) * 2
+    question.ask_and_listen(v).await.unwrap() == (v as u16) * 2
 }
 
-async fn suspect(mut answer: Answerer<u8, u16>) -> bool {
-    while let Some(question) = answer.hear().await {
+async fn suspect(mut answer: Responder<u8, u16>) -> bool {
+    while let Some(question) = answer.listen().await {
         let value = *question as u16;
         question.answer(value * 2).unwrap();
     }

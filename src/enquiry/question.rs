@@ -1,6 +1,6 @@
 use std::time::Duration;
 use crate::enquiry::dialogue::Dialogue;
-use crate::enquiry::error::{AskError, DialogueError, DialogueTimeoutError, HearError, HearTimeoutError};
+use crate::enquiry::error::{AskError, DialogueError, DialogueTimeoutError, ListenError, ListenTimeoutError};
 use tokio::sync::{mpsc, oneshot};
 
 /// Questioner can be used to ask questions to the Answer side.
@@ -11,7 +11,7 @@ pub struct Questioner<Q, A> {
     question_sender: mpsc::Sender<Dialogue<Q,A>>,
 }
 
-/// QuestionAsked can be used to hear an answer
+/// QuestionAsked can be used to Listen an answer
 #[derive(Debug)]
 pub struct QuestionAsked<A> {
     answer_receiver: oneshot::Receiver<A>
@@ -36,36 +36,36 @@ impl<Q, A> Questioner<Q,A> {
         )
     }
     /// Ask a question and also wait for an answer
-    pub async fn ask_and_hear_answer(&self, message: Q) -> Result<A, DialogueError<Q>> {
+    pub async fn ask_and_listen(&self, message: Q) -> Result<A, DialogueError<Q>> {
         self.ask(message).await
             .map_err(DialogueError::Ask)?
-            .hear_answer().await
-            .map_err(|_| DialogueError::Hear)
+            .listen().await
+            .map_err(|_| DialogueError::Listen)
     }
     /// Ask a question and also wait for an answer
-    pub async fn ask_and_hear_answer_or_timeout(&self, message: Q, timeout: impl Into<Duration>) -> Result<A, DialogueTimeoutError<Q>> {
+    pub async fn ask_and_listen_or_timeout(&self, message: Q, timeout: impl Into<Duration>) -> Result<A, DialogueTimeoutError<Q>> {
         self.ask(message).await
             .map_err(DialogueTimeoutError::Ask)?
-            .hear_answer_or_timeout(timeout).await
+            .listen_or_timeout(timeout).await
             .map_err(|e| e.into())
     }
 }
 
 impl<A> QuestionAsked<A> {
     /// Wait until an answer arrives
-    pub async fn hear_answer(self) -> Result<A, HearError> {
+    pub async fn listen(self) -> Result<A, ListenError> {
         self.answer_receiver.await
-            .map_err(|_| HearError(()))
+            .map_err(|_| ListenError(()))
     }
     /// Wait until an answer arrives or a certain time has elapsed
-    pub async fn hear_answer_or_timeout(self, timeout: impl Into<Duration>) -> Result<A, HearTimeoutError> {
+    pub async fn listen_or_timeout(self, timeout: impl Into<Duration>) -> Result<A, ListenTimeoutError> {
         tokio::select! {
             biased;
             result = self.answer_receiver => {
-                result.map_err(|_|HearTimeoutError::Disconnected)
+                result.map_err(|_| ListenTimeoutError::Disconnected)
             },
             _ = tokio::time::sleep(timeout.into()) => {
-                Err(HearTimeoutError::Timeout)
+                Err(ListenTimeoutError::Timeout)
             }
         }
     }

@@ -1,20 +1,20 @@
 use crate::enquiry::dialogue::Dialogue;
 use tokio::sync::mpsc;
 
-/// Answer can hear questions, when a question is received a new `Dialogue` is created
+/// Responder can Listen questions, when a question is asked a new `Dialogue` is created
 /// Instances are created by the [`enquiry::new(size)`](crate::enquiry::new()) function
-pub struct Answerer<Q, A> {
+pub struct Responder<Q, A> {
     question_receiver: mpsc::Receiver<Dialogue<Q, A>>,
 }
 
-impl<Q, A> Answerer<Q, A> {
+impl<Q, A> Responder<Q, A> {
     pub(super) fn new(question_receiver: mpsc::Receiver<Dialogue<Q, A>>) -> Self {
         Self {
             question_receiver
         }
     }
-    /// hear until a question is asked
-    pub async fn hear(&mut self) -> Option<Dialogue<Q, A>> {
+    /// Listen until a question is asked
+    pub async fn listen(&mut self) -> Option<Dialogue<Q, A>> {
         self.question_receiver.recv().await
     }
 }
