@@ -6,7 +6,7 @@ use tokio::sync::{mpsc, oneshot};
 /// Questioner can be used to ask questions to the Answer side.
 /// Questioner is cheap to Clone, consider cloning it when you will have to ask questions from multiple tasks
 /// Instances are created by the [`enquiry::new(size)`](crate::enquiry::new()) function
-#[derive(Debug, Clone)]
+#[derive(Debug)]
 pub struct Questioner<Q, A> {
     question_sender: mpsc::Sender<Dialogue<Q,A>>,
 }
@@ -67,6 +67,14 @@ impl<A> QuestionAsked<A> {
             _ = tokio::time::sleep(timeout.into()) => {
                 Err(ListenTimeoutError::Timeout)
             }
+        }
+    }
+}
+
+impl<Q, A> std::clone::Clone for Questioner<Q, A> {
+    fn clone(&self) -> Self {
+        Self {
+            question_sender: self.question_sender.clone(),
         }
     }
 }
