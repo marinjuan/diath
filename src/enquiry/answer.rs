@@ -8,6 +8,7 @@ pub struct Responder<Q, A> {
 }
 
 impl<Q, A> Responder<Q, A> {
+    /// Creates a new Responder
     pub(super) fn new(question_receiver: mpsc::Receiver<Dialogue<Q, A>>) -> Self {
         Self {
             question_receiver

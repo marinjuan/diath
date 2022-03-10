@@ -18,6 +18,7 @@ pub struct QuestionAsked<A> {
 }
 
 impl<Q, A> Questioner<Q,A> {
+    /// Creates a new Questioner<Q, A>
     pub(super) fn new(question_sender: mpsc::Sender<Dialogue<Q, A>>) -> Self {
         Self {
             question_sender

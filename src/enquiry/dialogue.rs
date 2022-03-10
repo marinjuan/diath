@@ -19,6 +19,7 @@ pub struct Dialogue<Q, A> {
 pub struct ResponseChannel<A>(oneshot::Sender<A>);
 
 impl<Q, A> Dialogue<Q,A> {
+    /// Creates a new Dialogue
     pub(super) fn new(message: Q, answer_sender: oneshot::Sender<A>) -> Self {
         Self {
             message,
