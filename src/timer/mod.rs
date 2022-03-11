@@ -12,7 +12,7 @@ where Result: Send {
 /// Returns an ExecuteTaskResult::Completed(Result) If the task was executed until completion where Result is the return type of the task
 /// Returns an ExecuteTaskResult::Timeout otherwise.
 pub async fn execute_until_timeout<Task, Duration>(task: Task, duration: Duration) -> TaskTimeoutResult<Task::Output>
-    where Task: Future + Send,
+    where Task: Future,
           Task::Output: Send,
           Duration: Into<std::time::Duration>,
 {
@@ -32,7 +32,7 @@ pub async fn execute_until_timeout<Task, Duration>(task: Task, duration: Duratio
 /// Returns an ExecuteTaskResult::Timeout otherwise.
 pub async fn execute_task_until_timeout<Task, Duration>(task: Task, duration: Duration) -> JoinHandle<TaskTimeoutResult<Task::Output>>
     where Task: Future + Send + 'static,
-          Task::Output: Send + 'static,
+          Task::Output: Send,
           Duration: Into<std::time::Duration>,
 {
     let timeout = tokio::time::sleep(duration.into());

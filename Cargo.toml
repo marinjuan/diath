@@ -1,6 +1,6 @@
 [package]
 name = "diath"
-version = "0.5.0"
+version = "0.5.1"
 edition = "2021"
 license = "MIT"
 description = "diath is a light-weight library for communication between tokio async tasks"
